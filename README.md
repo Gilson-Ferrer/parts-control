@@ -19,10 +19,8 @@ O sistema aplica na prática os conceitos de Engenharia de Software, testes auto
 Para garantir a integridade dos dados, o sistema foi modelado utilizando o relacionamento de 1:N, onde uma **Etapa** de restauração possui várias **Peças** associadas.
 
 ### 1. Diagrama de Entidade-Relacionamento (DER)
+
 ![alt text](image.png)
-
-![DER do Projeto](./docs/der.png)
-
 ### 2. Dicionário de Dados
 
 **Tabela: `Etapas`**
