@@ -1,4 +1,7 @@
 const express = require('express');
+const sequelize = require('./db/database');
+const { Etapa, Peca } = require('./models/Peca'); // Importa os modelos
+
 const app = express();
 const PORT = 3000;
 
@@ -8,10 +11,13 @@ app.set('views', './views');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get('/', (req, res) => {
-    res.send('Sistema Parts Control Rodando! O MVC será montado aqui.');
-});
+app.use('/', require('./routes/pecas'));
 
-app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta http://localhost:${PORT}`);
+sequelize.sync({ force: false }).then(() => {
+    console.log('Tabelas sincronizadas no SQLite com sucesso.');
+    app.listen(PORT, () => {
+        console.log(`Servidor rodando na porta http://localhost:${PORT}`);
+    });
+}).catch(err => {
+    console.error('Erro ao conectar com o banco de dados:', err);
 });
