@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parts Control - Restauração</title>
+    <!-- Bootstrap para agilizar o design -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
     <div class="container mt-5">
         <h1 class="mb-4">Parts Control - Gestão de Restauração</h1>
         
-        <!-- Formulário para Cadastro de Peças veiculares -->
+        <!-- Formulário para Cadastro de Peças da Kombi -->
         <div class="card mb-4">
             <div class="card-header bg-dark text-white">Adicionar Nova Peça</div>
             <div class="card-body">
@@ -26,7 +27,8 @@
                         </div>
                         <div class="col-md-2">
                             <label class="form-label">Preço (R$)</label>
-                            <input type="number" step="0.01" name="preco" class="form-control" required placeholder="0.00">
+                            <!-- CORREÇÃO 1: min="0" adicionado -->
+                            <input type="number" step="0.01" min="0" name="preco" class="form-control" required placeholder="0.00">
                         </div>
                         <div class="col-md-2">
                             <label class="form-label">Status</label>
@@ -34,6 +36,8 @@
                                 <option value="Pendente">Pendente</option>
                                 <option value="Comprada">Comprada</option>
                                 <option value="Instalada">Instalada</option>
+                                <!-- CORREÇÃO 4: Opção Devolvida adicionada -->
+                                <option value="Devolvida">Devolvida</option>
                             </select>
                         </div>
                         <div class="col-md-2">
@@ -41,13 +45,15 @@
                             <input type="text" name="etapa_nome" class="form-control" required placeholder="Ex: Suspensão">
                         </div>
                     </div>
+                    <!-- CORREÇÃO 3: Botão de limpar adicionado -->
                     <button type="submit" class="btn btn-success mt-3">Salvar Peça</button>
+                    <button type="reset" class="btn btn-secondary mt-3 ms-2">Limpar</button>
                 </form>
             </div>
         </div>
 
         <!-- Tabela Listando as Peças -->
-        <div class="card shadow-sm">
+        <div class="card shadow-sm mb-5">
             <div class="card-header">Inventário de Peças</div>
             <div class="card-body p-0">
                 <table class="table table-striped table-hover mb-0">
@@ -58,24 +64,36 @@
                             <th>Etapa</th>
                             <th>Status</th>
                             <th>Preço</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
+                        <!-- O EJS injeta os dados do banco de dados aqui -->
                         <% pecas.forEach(peca => { %>
                             <tr>
                                 <td><strong><%= peca.nome %></strong></td>
                                 <td><%= peca.part_number || '-' %></td>
                                 <td><%= peca.Etapa ? peca.Etapa.nome : '-' %></td>
                                 <td>
-                                    <span class="badge bg-<%= peca.status === 'Instalada' ? 'success' : (peca.status === 'Comprada' ? 'primary' : 'warning text-dark') %>">
+                                    <!-- CORREÇÃO 4: Lógica de cor da badge atualizada para incluir Devolvida -->
+                                    <span class="badge bg-<%= peca.status === 'Instalada' ? 'success' : (peca.status === 'Comprada' ? 'primary' : (peca.status === 'Devolvida' ? 'danger' : 'warning text-dark')) %>">
                                         <%= peca.status %>
                                     </span>
                                 </td>
-                                <td>R$ <%= peca.preco %></td>
+                                <!-- CORREÇÃO 2: Formatação de ponto para vírgula -->
+                                <td>R$ <%= parseFloat(peca.preco).toFixed(2).replace('.', ',') %></td>
+                                
+                                <!-- BOTÃO DE DELETAR -->
+                                <td>
+                                    <form action="/deletar/<%= peca.id %>" method="POST" onsubmit="return confirm('Tem certeza que deseja deletar esta peça?');">
+                                        <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
+                                    </form>
+                                </td>
                             </tr>
                         <% }) %>
                         <% if(pecas.length === 0) { %>
-                            <tr><td colspan="5" class="text-center py-3">Nenhuma peça registrada ainda.</td></tr>
+                            <!-- Colspan alterado para 6 para cobrir a nova coluna de Ações -->
+                            <tr><td colspan="6" class="text-center py-3">Nenhuma peça registrada ainda.</td></tr>
                         <% } %>
                     </tbody>
                 </table>

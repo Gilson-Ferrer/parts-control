@@ -30,3 +30,12 @@ exports.adicionarPeca = async (req, res) => {
         res.status(500).send('Erro ao salvar peça: ' + erro.message);
     }
 };
+
+exports.deletarPeca = async (req, res) => {
+    try {
+        await Peca.destroy({ where: { id: req.params.id } });
+        res.redirect('/');
+    } catch (erro) {
+        res.status(500).send('Erro ao deletar peça: ' + erro.message);
+    }
+};

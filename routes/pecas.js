@@ -5,5 +5,6 @@ const pecaController = require('../controllers/pecaController');
 
 router.get('/', pecaController.listarPecas);
 router.post('/adicionar', pecaController.adicionarPeca); 
+router.post('/deletar/:id', pecaController.deletarPeca);
 
 module.exports = router;

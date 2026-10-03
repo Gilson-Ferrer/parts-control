@@ -57,3 +57,4 @@ Para garantir a integridade dos dados, o sistema foi modelado utilizando o relac
 ```bash
 git clone [https://github.com/Gilson-Ferrer/parts-control.git](https://github.com/Gilson-Ferrer/parts-control.git)
 cd parts-control
+npm install
